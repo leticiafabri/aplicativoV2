@@ -5,7 +5,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import br.pucpr.aplicativov2.data.Pessoa
 import br.pucpr.aplicativov2.ui.screens.SegundaTela
-import br.pucpr.aplicativov2.ui.screens.
+import br.pucpr.aplicativov2.ui.screens.PrimeiraTela
 
 enum class Tela { LISTA, CADASTRO }
 
