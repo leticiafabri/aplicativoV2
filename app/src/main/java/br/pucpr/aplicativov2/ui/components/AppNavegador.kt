@@ -1,14 +1,19 @@
 // ../ui/components/AppNavegador.kt
-package br.pucpr.app.ui.components
+package br.pucpr.aplicativov2.ui.components
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import br.pucpr.aplicativov2.data.Pessoa
 import br.pucpr.aplicativov2.ui.screens.PrimeiraTela
+import br.pucpr.aplicativov2.ui.screens.SegundaTela
+
+enum class Tela { LISTA, CADASTRO }
 
 @Composable
 fun AppNavegador() {
+
+    var tela by rememberSaveable { mutableStateOf(Tela.CADASTRO) }
+
     val pessoas = remember {
         mutableStateListOf(
             Pessoa(id = 1, nome = "Ana", idade = 22),
@@ -16,5 +21,13 @@ fun AppNavegador() {
             Pessoa(id = 3, nome = "Carla", idade = 27),
         )
     }
-    PrimeiraTela(pessoas = pessoas)
+
+    when (tela) {
+        Tela.LISTA -> {
+            PrimeiraTela(pessoas = pessoas)
+        }
+        Tela.CADASTRO -> {
+            SegundaTela()
+        }
+    }
 }
