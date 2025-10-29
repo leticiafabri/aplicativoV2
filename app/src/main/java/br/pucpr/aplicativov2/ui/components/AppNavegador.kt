@@ -1,5 +1,5 @@
 // ../ui/components/AppNavegador.kt
-package br.pucpr.aplicativov2.ui.components
+package br.pucpr.app.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
