@@ -1,5 +1,5 @@
 // ../ui/screens/PrimeiraTela.kt
-package br.pucpr.app.ui.screens
+package br.pucpr.aplicativov2.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
