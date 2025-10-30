@@ -1,23 +1,20 @@
 // ../app/data/PessoaDao.kt
 package br.pucpr.aplicativov2.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PessoaDao {
-
-    // reatividade sem coroutines na UI
     @Query("SELECT * FROM pessoas ORDER BY id DESC")
-    fun observarTodas(): LiveData<List<Pessoa>>
+    fun observarTodas(): Flow<List<Pessoa>>
 
-    // funções síncronas (apenas para POC)
     @Insert
-    fun inserir(pessoa: Pessoa): Long
+    suspend fun inserir(pessoa: Pessoa): Long
 
     @Update
-    fun atualizar(pessoa: Pessoa)
+    suspend fun atualizar(pessoa: Pessoa)
 
     @Delete
-    fun deletar(pessoa: Pessoa)
+    suspend fun deletar(pessoa: Pessoa)
 }
