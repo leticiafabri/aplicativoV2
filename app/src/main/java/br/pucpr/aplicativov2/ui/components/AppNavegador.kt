@@ -1,12 +1,13 @@
-// ../ui/components/AppNavegador.kt
+// ../app/ui/components/AppNavegador.kt
 package br.pucpr.aplicativov2.ui.components
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import br.pucpr.aplicativov2.data.AppDatabase
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import br.pucpr.aplicativov2.data.Pessoa
+import br.pucpr.aplicativov2.ui.PessoasViewModel
 import br.pucpr.aplicativov2.ui.screens.PrimeiraTela
 import br.pucpr.aplicativov2.ui.screens.SegundaTela
 
@@ -16,31 +17,31 @@ enum class Tela { LISTA, CADASTRO }
 fun AppNavegador() {
 
     val context = LocalContext.current
+    val vm: PessoasViewModel = viewModel(factory = PessoasViewModel.factory(context))
 
-    // DAO do Room
-    val dao = remember { AppDatabase.get(context).pessoaDao() }
+    val pessoas by vm.pessoas.collectAsStateWithLifecycle()  // lista reativa do VM
 
-    // LiveData -> State do Compose: reatividade automática
-    val pessoas by dao.observarTodas().observeAsState(initial = emptyList())
-
-    // Navegação simples
     var tela by rememberSaveable { mutableStateOf(Tela.LISTA) }
     var idPessoa by rememberSaveable { mutableStateOf<Long?>(null) }
 
-    fun navegarTelaCriar() { idPessoa = null; tela = Tela.CADASTRO }
-    fun navegarTelaEditar(p: Pessoa) { idPessoa = p.id; tela = Tela.CADASTRO }
-    fun excluir(p: Pessoa) { dao.deletar(p) }
-    fun voltar() { tela = Tela.LISTA }
+    fun navegarTelaCriar() {
+        idPessoa = null; tela = Tela.CADASTRO
+    }
+
+    fun navegarTelaEditar(p: Pessoa) {
+        idPessoa = p.id; tela = Tela.CADASTRO
+    }
+
+    fun voltar() {
+        tela = Tela.LISTA
+    }
+
+    fun excluir(p: Pessoa) {
+        vm.excluir(p)
+    }
 
     fun salvar(nome: String, idade: Int) {
-        val id = idPessoa
-        if (id == null) {
-            dao.inserir(Pessoa(nome = nome, idade = idade))
-        } else {
-            val atual = pessoas.firstOrNull { it.id == id } ?: return
-            dao.atualizar(atual.copy(nome = nome, idade = idade))
-        }
-        voltar()
+        vm.salvar(idPessoa, nome, idade); voltar()
     }
 
     when (tela) {
@@ -50,6 +51,7 @@ fun AppNavegador() {
             onItemClick = { pessoa -> navegarTelaEditar(pessoa) },
             onItemLongPress = { pessoa -> excluir(pessoa) }
         )
+
         Tela.CADASTRO -> {
             val pessoaSelecionada = pessoas.firstOrNull { it.id == idPessoa }
             SegundaTela(
